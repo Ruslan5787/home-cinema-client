@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.modal--entered,
+.modal--entering {
+  opacity: 1;
+}
+
+.modal--entering .modal-content,
+.modal--entered .modal-content {
+  transform: translateY(0);
+}
+
+.modal--exiting,
+.modal--exited {
+  opacity: 0;
+}
+
+.modal--exiting .modal-content,
+.modal--exited .modal-content {
+  transform: translateY(-50px);
+}
+
+@layer base {
+  body {
+    @apply bg-slate-900 font-roboto text-base;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    overflow: hidden;
+    overflow-y: auto;
+    transition: opacity 0.3s;
+    z-index: 999;
+  }
+
+  .modal-wrapper {
+    @apply min-h-full items-center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    transition: opacity 0.3s;
+  }
+
+  .modal-content {
+    @apply bg-slate-700 text-white;
+    position: relative;
+    margin: 20px;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 20px;
+    padding: 40px 20px 20px 20px;
+    transform: translateY(-50px);
+    transition:
+      opacity 0.3s,
+      transform 0.3s;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply flex items-center gap-2 rounded-md px-4 py-2 text-white;
+  }
+  .btn-for-modal {
+    @apply w-full max-w-32 justify-center bg-blue-500 text-white transition hover:bg-blue-700;
+  }
+  .input {
+    @apply rounded-md border-slate-500 bg-slate-700 bg-transparent p-3 outline-none placeholder:text-white focus:border-slate-800;
+  }
+  .container {
+    @apply max-w-[1000px];
+  }
+}
+
+@layer utilities {
+  .btn-red {
+    @apply bg-rose-900 hover:bg-rose-800;
+  }
+  .btn-green {
+    @apply bg-green-600 hover:bg-green-800;
+  }
+
+  .btn-orange {
+    @apply bg-orange-500 hover:bg-orange-700;
+  }
+
+  .btn-yellow {
+    @apply bg-yellow-500 hover:bg-yellow-600;
+  }
+
+  .btn-indigo {
+    @apply bg-indigo-500 hover:bg-indigo-700;
+  }
+}
