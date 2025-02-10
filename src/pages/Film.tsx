@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import { MdDelete, MdModeEditOutline } from 'react-icons/md';
 import { useEffect } from 'react';
 import { EndPointSpecialListsForFilms, IFilm } from '../types';
-import { getWordForToastAboutSpecialFilm } from '../helpers/helpers';
+import { getFormatDuration, getWordForToastAboutSpecialFilm } from '../helpers/helpers';
 
 export const filmLoader = async ({ params }: LoaderFunctionArgs) => {
   const { data } = await instance.get('/film/' + params.id);
@@ -78,7 +78,7 @@ const Film = () => {
           alt="Постер фильма"
           className="mr-10 max-w-xs rounded-md"
         />
-        <div className="flex flex-col text-lg">
+        <div className="flex flex-col text-lg w-full">
           <div className="mb-5">
             <div className="flex justify-between w-full">
               <h1 className="mb-5 text-4xl font-bold w-[80%]">
@@ -102,7 +102,7 @@ const Film = () => {
             <div className="mb-5 flex flex-col">
               <span>Страна - {filmData.production}</span>
               <span>Жанр - {filmData.genre.name}</span>
-              <span>Время - {filmData.duration}</span>
+              <span>Время - {getFormatDuration(filmData.duration)}</span>
               <span>
                 Ограничение по возрасту -{' '}
                 {filmData.restrictionAge.restrictionAge}+

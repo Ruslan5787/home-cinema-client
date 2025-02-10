@@ -16,10 +16,6 @@ export const createFilmAction = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData();
     
     const payload = Object.fromEntries(formData.entries());
-    console.log(payload);
-    
-    const yearRelease = Number(payload.yearRelease); 
-    payload.yearRelease = yearRelease;
 
     await instance.post('/film', payload);
     

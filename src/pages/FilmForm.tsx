@@ -104,7 +104,7 @@ export const FilmForm = (props: FilmFormProps) => {
 
             <label className="mb-4 flex flex-col">
               <span className="mb-1 text-lg">
-                Время <small>(Пример записи: 1 ч 11 мин)</small>
+                Время <small>(Пример записи: 95)</small>
               </span>
               <input
                 type="text"

@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useRef } from 'react';
+import { PropsWithChildren, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { Transition } from 'react-transition-group';
 import { getWidthScrollPage } from '../helpers/helpers';
@@ -19,6 +19,7 @@ export const Modal = ({
   const header = document.querySelector<HTMLElement>('header');
 
   const onWrapperClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    // ts-ignore
     if (event.target.className === 'modal-wrapper') {
       onClose();
     }
@@ -48,24 +49,25 @@ export const Modal = ({
             }
           }}
         >
-          {(state) => {
+          {(state: any) => {
             return (
-            <div
-              ref={nodeRef}
-              className={`modal modal--${state}`} // z-999 fixed left-0 top-0 h-full w-full overflow-hidden overflow-y-auto bg-black/30
-            >
               <div
-                className="modal-wrapper" // absolute left-0 top-0 flex min-h-full w-full items-center justify-center
-                onClick={onWrapperClick}
+                ref={nodeRef}
+                className={`modal modal--${state}`} // z-999 fixed left-0 top-0 h-full w-full overflow-hidden overflow-y-auto bg-black/30
               >
-                <div // relative m-20 w-full max-w-[600px] rounded-2xl bg-slate-700 p-[20px] text-white
-                  className="modal-content"
+                <div
+                  className="modal-wrapper" // absolute left-0 top-0 flex min-h-full w-full items-center justify-center
+                  onClick={onWrapperClick}
                 >
-                  {children}
+                  <div // relative m-20 w-full max-w-[600px] rounded-2xl bg-slate-700 p-[20px] text-white
+                    className="modal-content"
+                  >
+                    {children}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}}
+            )
+          }}
         </Transition>
       </>,
       rootElement,

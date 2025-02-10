@@ -32,3 +32,17 @@ export const getWidthScrollPage = () => {
 
   return scrollWidth
 };
+
+export const getFormatDuration = (duration: number): string => {
+  const minutesInHour = 60;
+  const hours = Math.floor(duration / minutesInHour);
+  const minutes = duration % minutesInHour;
+
+  if (minutes == 0) {
+    return `${hours} ч`
+  } else if(hours == 0) {
+    return `${minutes} мин`
+  }
+
+  return `${hours} ч ${minutes} мин`
+}

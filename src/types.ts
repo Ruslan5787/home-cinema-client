@@ -37,7 +37,7 @@ export interface IFilm {
   name: string;
   production: string;
   yearRelease: number;
-  duration: string;
+  duration: number;
   poster: string;
   description: string;
   genre: IGenre;

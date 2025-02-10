@@ -27,19 +27,6 @@ export const editFilmAction = async ({ request }: ActionFunctionArgs) => {
 
     const payload = Object.fromEntries(formData.entries());
 
-    const yearRelease = Number(payload.yearRelease);
-    payload.yearRelease = yearRelease;
-
-    console.log(payload);
-
-    for (const property in payload) {
-      const propertyValue = payload[property];
-
-      if (typeof propertyValue === 'string') {
-        payload[property] = propertyValue.trim();
-      }
-    }
-
     await instance.patch(`/film/${payload.id}`, payload);
 
     toast.success('Фильм изменен.');
