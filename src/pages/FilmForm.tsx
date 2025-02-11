@@ -1,16 +1,42 @@
 import { Form } from 'react-router';
 import { IFilm, IGenre, IRestrictionAge } from '../types';
+import { useEffect, useState } from 'react';
+import { AiFillCloseCircle } from 'react-icons/ai';
+import axios from 'axios';
+import { instance } from '../api/axios.api';
 
 type FilmFormProps = {
   film?: IFilm;
   action: string;
-  genres: IGenre[];
-  restrictionAges: IRestrictionAge[]; 
+  allGenres: IGenre[];
+  restrictionAges: IRestrictionAge[];
   isCreate: boolean;
 }
 
 export const FilmForm = (props: FilmFormProps) => {
-  const { film, action, genres, isCreate, restrictionAges } = props;
+  const { film, action, allGenres, isCreate, restrictionAges } = props;
+  const [genresFilm, setGenres] = useState<IGenre>([]);
+
+  useEffect(() => {
+    setGenres(film?.genres);
+  }, [])
+
+  useEffect(() => {
+    console.log(genresFilm);
+
+  }, [])
+
+  const addGenreToFilm = async (genreId: number) => {
+    await instance.post(`film/films/${film?.id}/genres/${genreId}`)
+    // .then(() => axios.get(`/api/films/${filmId}/genres`))
+    // .then((res) => setFilmGenres(res.data));
+  };
+
+  const removeGenreFromFilm = (genreId: number) => {
+    axios.delete(`/api/films/${filmId}/genres/${genreId}`)
+      .then(() => axios.get(`/api/films/${filmId}/genres`))
+      .then((res) => setFilmGenres(res.data));
+  };
 
   return (
     <div className="m-auto flex max-w-[550px]">
@@ -53,14 +79,38 @@ export const FilmForm = (props: FilmFormProps) => {
                 name="genre"
                 required
                 defaultValue={film?.genre.id || 1}
+                onChange={(event) => {
+                  console.log(event.target.value);
+
+                  addGenreToFilm(event.target.value);
+                  // const select = event.target;
+                  // const genreId = select.options[select.selectedIndex].value;
+                  // const genreName = select.options[select.selectedIndex].text;
+
+                  // setGenres([{ id: genreId, name: genreName }, ...genresFilm])
+                }}
               >
-                {genres.map((genre: IGenre, index: number) => (
-                  <option key={index} value={genre.id}>
+                {allGenres.map((genre: IGenre) => (
+                  <option key={genre.id} value={genre.id}>
                     {genre.name}
                   </option>
                 ))}
               </select>
             </label>
+
+            <div className='flex flex-wrap items-center gap-2'>
+              {genresFilm?.map((genre: IGenre) => (
+                <div key={genre.id} className='group relative flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2'>
+                  {genre.name}
+
+                  <div className='group-hover:flex absolute bottom-0 left-0 right-0 top-0 hidden items-center justify-end rounded-lg bg-black/60 px-3'>
+                    <button>
+                      <AiFillCloseCircle />
+                    </button>
+
+                  </div>
+                </div>
+              ))}</div>
 
             <label className="mb-4 flex flex-col">
               <span className="mb-1 text-lg">Ограничение по возрасту</span>

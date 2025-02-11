@@ -41,6 +41,7 @@ export interface IFilm {
   poster: string;
   description: string;
   genre: IGenre;
+  genres: IGenre[];
   restrictionAge: IRestrictionAge;
   createAt: Date;
 }

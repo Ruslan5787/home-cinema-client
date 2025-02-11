@@ -37,7 +37,7 @@ export const CreateFilm: FC = () => {
 
   return (
     <>
-      <FilmForm restrictionAges={restrictionAges} genres={genres} action="/create-film" isCreate/>
+      <FilmForm restrictionAges={restrictionAges} allGenres={genres} action="/create-film" isCreate/>
     </>
   );
 };

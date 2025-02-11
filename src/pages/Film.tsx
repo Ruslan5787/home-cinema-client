@@ -12,7 +12,7 @@ import { useAppSelector } from '../store/hooks';
 import { toast } from 'react-toastify';
 import { MdDelete, MdModeEditOutline } from 'react-icons/md';
 import { useEffect } from 'react';
-import { EndPointSpecialListsForFilms, IFilm } from '../types';
+import { EndPointSpecialListsForFilms, IFilm, IGenre } from '../types';
 import { getFormatDuration, getWordForToastAboutSpecialFilm } from '../helpers/helpers';
 
 export const filmLoader = async ({ params }: LoaderFunctionArgs) => {
@@ -101,7 +101,14 @@ const Film = () => {
             </div>
             <div className="mb-5 flex flex-col">
               <span>Страна - {filmData.production}</span>
-              <span>Жанр - {filmData.genre.name}</span>
+              <span>Жанр - {
+                filmData.genres.map((genre: IGenre, index) => {
+                  if (index == filmData.genres.length - 1) {
+                    return <span key={index}>{genre.name}</span>
+                  }
+                  return <span key={index}>{genre.name}, </span>
+                })
+              }</span>
               <span>Время - {getFormatDuration(filmData.duration)}</span>
               <span>
                 Ограничение по возрасту -{' '}

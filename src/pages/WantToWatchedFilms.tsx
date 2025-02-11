@@ -8,6 +8,9 @@ import ReactPaginate from 'react-paginate';
 export const wantToWatchedFilmsLoader = async () => {
   const { data } = await instance.get('/want-to-watched-films');
 
+  console.log(data);
+  
+
   return data;
 };
 

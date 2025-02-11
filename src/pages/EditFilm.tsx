@@ -51,7 +51,7 @@ export const EditFilm: FC = () => {
       <FilmForm
         film={film}
         restrictionAges={restrictionAges}
-        genres={genres}
+        allGenres={genres}
         action={`/edit-film/${film.id}`}
         isCreate={false}
       />
