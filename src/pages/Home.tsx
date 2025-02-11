@@ -7,7 +7,6 @@ import { useAppSelector } from '../store/hooks';
 import { IFilm, IGenre } from '../types';
 import { GrClearOption } from 'react-icons/gr';
 import { Modal } from '../components/Modal';
-import { flushSync } from 'react-dom';
 
 export const filmsLoader = async () => {
   const films = await instance.get('/film');
