@@ -2,9 +2,9 @@ import { Form } from 'react-router';
 import { IFilm, IGenre, IRestrictionAge } from '../types';
 import { useEffect, useState } from 'react';
 import { AiFillCloseCircle } from 'react-icons/ai';
-import axios from 'axios';
 import { instance } from '../api/axios.api';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 type FilmFormProps = {
   film?: IFilm;
@@ -25,7 +25,9 @@ export const FilmForm = (props: FilmFormProps) => {
       setFilmGenres(res.data[0].genres)
     }
 
-    fetchData()
+    if (!isCreate) {
+      fetchData()
+    }
   }, [])
 
   const addGenresToFilm = async () => {
@@ -46,6 +48,12 @@ export const FilmForm = (props: FilmFormProps) => {
           <div className="mb-6">
             <input type="hidden" name="id" defaultValue={film?.id} />
 
+            <input
+              type="hidden"
+              name="genres"
+              value={JSON.stringify(filmGenres)}
+            />
+
             <label className="mb-4 flex flex-col">
               <span className="mb-1 text-lg">Название фильма</span>
               <input
@@ -54,7 +62,6 @@ export const FilmForm = (props: FilmFormProps) => {
                 className="input bg-slate-700 placeholder:text-white/70"
                 name="name"
                 defaultValue={film?.name || ''}
-                readOnly={!isCreate}
               />
             </label>
 
@@ -76,7 +83,6 @@ export const FilmForm = (props: FilmFormProps) => {
                 className="input bg-slate-700 placeholder:text-white/70"
                 name="genre"
                 required
-                defaultValue={film?.genre.id || 1}
                 onChange={(event) => {
                   const select = event.target;
                   const option = select[select.selectedIndex];
@@ -179,15 +185,6 @@ export const FilmForm = (props: FilmFormProps) => {
           <button
             className="btn btn-green w-full justify-center text-center"
             type="submit"
-            onClick={(event) => {
-              if (filmGenres.length < 1) {
-                event.preventDefault();
-                toast.error("У фильма должен быть хотя бы один жанр!");
-                return;
-              } else {
-                addGenresToFilm();
-              }
-            }}
           >
             Сохранить
           </button>

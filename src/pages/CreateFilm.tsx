@@ -7,18 +7,17 @@ import { FilmForm } from './FilmForm';
 export const createFilmLoader = async () => {
   const genres = await instance.get('/genre');
   const restrictionAges = await instance.get('/restriction-age');
-  
-  return {genres: genres.data, restrictionAges: restrictionAges.data};
+
+  return { genres: genres.data, restrictionAges: restrictionAges.data };
 };
 
 export const createFilmAction = async ({ request }: ActionFunctionArgs) => {
   try {
     const formData = await request.formData();
-    
     const payload = Object.fromEntries(formData.entries());
 
     await instance.post('/film', payload);
-    
+
     toast.success('Фильм добавлен.');
 
     return redirect('/');
@@ -33,11 +32,11 @@ export const createFilmAction = async ({ request }: ActionFunctionArgs) => {
 };
 
 export const CreateFilm: FC = () => {
-  const {genres, restrictionAges} = useLoaderData();
+  const { genres, restrictionAges } = useLoaderData();
 
   return (
     <>
-      <FilmForm restrictionAges={restrictionAges} allGenres={genres} action="/create-film" isCreate/>
+      <FilmForm restrictionAges={restrictionAges} allGenres={genres} action="/create-film" isCreate />
     </>
   );
 };

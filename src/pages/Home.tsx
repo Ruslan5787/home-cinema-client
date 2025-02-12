@@ -12,8 +12,6 @@ export const filmsLoader = async () => {
   const films = await instance.get('/film');
   const genres = await instance.get('/genre');
 
-  console.log(films.data);
-
   return { films: films.data, genres: genres.data };
 };
 
@@ -205,8 +203,8 @@ const Home: FC = () => {
                     <div className="flex flex-col">
                       <span className="text-sm">{film.yearRelease}</span>
                       <div>
-                        {film.genres?.map((genre: IGenre, index) => {
-                          if (index == film.genres.length - 1) {
+                        {film.genres?.slice(0, 4).map((genre: IGenre, index) => {
+                          if (index == film.genres.slice(0, 4).length - 1) {
                             return <span key={index}>{genre.name}</span>
                           }
                           return <span key={index}>{genre.name}, </span>
