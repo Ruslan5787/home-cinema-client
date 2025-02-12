@@ -102,7 +102,7 @@ const Film = () => {
             <div className="mb-5 flex flex-col">
               <span>Страна - {filmData.production}</span>
               <span>Жанр - {
-                filmData.genres.map((genre: IGenre, index) => {
+                filmData.genres?.map((genre: IGenre, index) => {
                   if (index == filmData.genres.length - 1) {
                     return <span key={index}>{genre.name}</span>
                   }

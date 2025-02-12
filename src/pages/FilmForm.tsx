@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import axios from 'axios';
 import { instance } from '../api/axios.api';
+import { toast } from 'react-toastify';
 
 type FilmFormProps = {
   film?: IFilm;
@@ -15,27 +16,24 @@ type FilmFormProps = {
 
 export const FilmForm = (props: FilmFormProps) => {
   const { film, action, allGenres, isCreate, restrictionAges } = props;
-  const [genresFilm, setGenres] = useState<IGenre>([]);
+  const [filmGenres, setFilmGenres] = useState<IGenre[]>([]);
 
   useEffect(() => {
-    setGenres(film?.genres);
+    const fetchData = async () => {
+      const res = await instance.get(`film/films/${film?.id}/genres`);
+
+      setFilmGenres(res.data[0].genres)
+    }
+
+    fetchData()
   }, [])
 
-  useEffect(() => {
-    console.log(genresFilm);
-
-  }, [])
-
-  const addGenreToFilm = async (genreId: number) => {
-    await instance.post(`film/films/${film?.id}/genres/${genreId}`)
-    // .then(() => axios.get(`/api/films/${filmId}/genres`))
-    // .then((res) => setFilmGenres(res.data));
-  };
-
-  const removeGenreFromFilm = (genreId: number) => {
-    axios.delete(`/api/films/${filmId}/genres/${genreId}`)
-      .then(() => axios.get(`/api/films/${filmId}/genres`))
-      .then((res) => setFilmGenres(res.data));
+  const addGenresToFilm = async () => {
+    await instance.put(`film/${film?.id}/genres`, filmGenres, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
   };
 
   return (
@@ -80,14 +78,12 @@ export const FilmForm = (props: FilmFormProps) => {
                 required
                 defaultValue={film?.genre.id || 1}
                 onChange={(event) => {
-                  console.log(event.target.value);
+                  const select = event.target;
+                  const option = select[select.selectedIndex];
 
-                  addGenreToFilm(event.target.value);
-                  // const select = event.target;
-                  // const genreId = select.options[select.selectedIndex].value;
-                  // const genreName = select.options[select.selectedIndex].text;
-
-                  // setGenres([{ id: genreId, name: genreName }, ...genresFilm])
+                  if (!filmGenres.find(genre => genre.id === option.value)) {
+                    setFilmGenres([{ id: option.value, name: option.text }, ...filmGenres])
+                  }
                 }}
               >
                 {allGenres.map((genre: IGenre) => (
@@ -99,15 +95,19 @@ export const FilmForm = (props: FilmFormProps) => {
             </label>
 
             <div className='flex flex-wrap items-center gap-2'>
-              {genresFilm?.map((genre: IGenre) => (
+              {filmGenres.map((genre: IGenre) => (
                 <div key={genre.id} className='group relative flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2'>
                   {genre.name}
 
                   <div className='group-hover:flex absolute bottom-0 left-0 right-0 top-0 hidden items-center justify-end rounded-lg bg-black/60 px-3'>
-                    <button>
+                    <button onClick={(event) => {
+                      event.preventDefault();
+
+                      setFilmGenres(filmGenres.filter((addedGenre) => addedGenre.id !== genre.id));
+                      // removeGenreFromFilm(genre.id)
+                    }}>
                       <AiFillCloseCircle />
                     </button>
-
                   </div>
                 </div>
               ))}</div>
@@ -179,6 +179,15 @@ export const FilmForm = (props: FilmFormProps) => {
           <button
             className="btn btn-green w-full justify-center text-center"
             type="submit"
+            onClick={(event) => {
+              if (filmGenres.length < 1) {
+                event.preventDefault();
+                toast.error("У фильма должен быть хотя бы один жанр!");
+                return;
+              } else {
+                addGenresToFilm();
+              }
+            }}
           >
             Сохранить
           </button>

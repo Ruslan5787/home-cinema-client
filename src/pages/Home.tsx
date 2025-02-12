@@ -12,6 +12,8 @@ export const filmsLoader = async () => {
   const films = await instance.get('/film');
   const genres = await instance.get('/genre');
 
+  console.log(films.data);
+
   return { films: films.data, genres: genres.data };
 };
 
@@ -184,7 +186,7 @@ const Home: FC = () => {
 
         <div className="mb-14">
           {data.length ? (
-            <ul className="row-gap-4 flex flex-wrap gap-y-5 gap-x-5 justify-between">
+            <ul className="row-gap-4 flex flex-wrap gap-y-5 gap-x-5 justify-center">
               {data.map((film: IFilm) => (
                 <li key={film.id} className="flex w-[31.8%] flex-col rounded-xl p-2 bg-[#264f71]">
                   <Link to={'/film/' + film.id}>
@@ -203,7 +205,7 @@ const Home: FC = () => {
                     <div className="flex flex-col">
                       <span className="text-sm">{film.yearRelease}</span>
                       <div>
-                        {film.genres.map((genre: IGenre, index) => {
+                        {film.genres?.map((genre: IGenre, index) => {
                           if (index == film.genres.length - 1) {
                             return <span key={index}>{genre.name}</span>
                           }
