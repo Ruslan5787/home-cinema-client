@@ -4,6 +4,7 @@ import { FaHeart } from 'react-icons/fa';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
+import { IGenre } from '../types';
 
 export const wantToWatchedFilmsLoader = async () => {
   const { data } = await instance.get('/want-to-watched-films');
@@ -53,14 +54,14 @@ const WantToWatchedFilms = () => {
             Список желанных фильмов:
           </h1>
           <div>
-            <ul className="row-gap-4 flex flex-wrap gap-y-5">
+            <ul className="row-gap-4 flex flex-wrap gap-y-5 gap-x-5 justify-center">
               {data.map((wantToWatchedFilm) => {
                 const film = wantToWatchedFilm.films;
 
                 return (
                   <li
                     key={film.id}
-                    className="group relative flex w-[33.333%] flex-col px-4"
+                    className="group relative flex w-[31.8%] flex-col px-4 rounded-xl p-2 bg-[#264f71]"
                   >
                     <img
                       src={film.poster}
@@ -70,8 +71,15 @@ const WantToWatchedFilms = () => {
                     <h3 className="text-lg">{film.name}</h3>
 
                     <div className="flex flex-col">
-                      <span className="text-sm">{film.yearRelease}</span>
-                      <span className="text-sm">{film.genre.name}</span>
+                      <span className="text-sm">{film.yearRelease}</span><div>
+                        {film.genres?.slice(0, 4).map((genre: IGenre, index) => {
+
+                          if (index == film.genres.slice(0, 4).length - 1) {
+                            return <span key={genre.id}>{genre.name}</span>
+                          }
+                          return <span key={genre.id}>{genre.name}, </span>
+                        })}
+                      </div>
                     </div>
 
                     <div className="absolute right-[-2px] top-[-19px] hidden group-hover:block">

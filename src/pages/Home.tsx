@@ -27,11 +27,7 @@ const Home: FC = () => {
   const [isGenreFilms, setIsGenreFilms] = useState<boolean>(false);
 
   const userData = useAppSelector((state) => state.user.user);
-  const userId = useAppSelector((store) => store.user.user?.id);
-
   const isAdmin = userData?.role === 'ADMIN';
-
-  const isAuth = useAppSelector((state) => state.user.isAuth);
 
   const limit = 9;
 
@@ -188,9 +184,9 @@ const Home: FC = () => {
 
         <div className="mb-14">
           {data.length ? (
-            <ul className="row-gap-4 flex flex-wrap gap-y-5">
+            <ul className="row-gap-4 flex flex-wrap gap-y-5 gap-x-5 justify-center">
               {data.map((film: IFilm) => (
-                <li key={film.id} className="flex w-[33.333%] flex-col px-4">
+                <li key={film.id} className="flex w-[31.8%] flex-col rounded-xl p-2 bg-[#264f71]">
                   <Link to={'/film/' + film.id}>
                     <div className="relative">
                       <img
@@ -206,7 +202,14 @@ const Home: FC = () => {
 
                     <div className="flex flex-col">
                       <span className="text-sm">{film.yearRelease}</span>
-                      <span className="text-sm">{film.genre.name}</span>
+                      <div>
+                        {film.genres?.slice(0, 4).map((genre: IGenre, index) => {
+                          if (index == film.genres.slice(0, 4).length - 1) {
+                            return <span key={index}>{genre.name}</span>
+                          }
+                          return <span key={index}>{genre.name}, </span>
+                        })}
+                      </div>
                     </div>
                   </Link>
                 </li>
@@ -234,44 +237,46 @@ const Home: FC = () => {
             pageCount={totalPages}
           />
         ) : null}
-      </div>
-      
-      {blocker.state === 'blocked' ? (
-        <Modal isOpen={modalInfoIsOpen} onClose={() => setModalInfoOpen(false)}>
-          <div className="text-center">
-            <div className="mb-10">
-              <h3 className="mb-7 text-3xl font-bold">Предупреждение</h3>
-              <div className="text-xl">
-                <p className="mb-5">
-                  Для просмотра данного фильма нужно потвердить возраст!
-                </p>
-                <p>
-                  Вам есть <b>18+</b> лет?
-                </p>
+      </div >
+
+      {
+        blocker.state === 'blocked' ? (
+          <Modal isOpen={modalInfoIsOpen} onClose={() => setModalInfoOpen(false)}>
+            <div className="text-center">
+              <div className="mb-10">
+                <h3 className="mb-7 text-3xl font-bold">Предупреждение</h3>
+                <div className="text-xl">
+                  <p className="mb-5">
+                    Для просмотра данного фильма нужно потвердить возраст!
+                  </p>
+                  <p>
+                    Вам есть <b>18+</b> лет?
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <button
+                  className="btn btn-for-modal mr-10"
+                  onClick={() => {
+                    setModalInfoOpen(false);
+                    blocker.proceed();
+                  }}
+                >
+                  Да
+                </button>
+                <button
+                  className="btn btn-for-modal"
+                  onClick={() => {
+                    setModalInfoOpen(false);
+                  }}
+                >
+                  Нет
+                </button>
               </div>
             </div>
-            <div className="flex justify-center">
-              <button
-                className="btn btn-for-modal mr-10"
-                onClick={() => {
-                  setModalInfoOpen(false);
-                  blocker.proceed();
-                }}
-              >
-                Да
-              </button>
-              <button
-                className="btn btn-for-modal"
-                onClick={() => {
-                  setModalInfoOpen(false);
-                }}
-              >
-                Нет
-              </button>
-            </div>
-          </div>
-        </Modal>
-      ) : null}
+          </Modal>
+        ) : null
+      }
     </>
   );
 };

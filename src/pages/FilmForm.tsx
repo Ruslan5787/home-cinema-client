@@ -1,16 +1,42 @@
 import { Form } from 'react-router';
 import { IFilm, IGenre, IRestrictionAge } from '../types';
+import { useEffect, useState } from 'react';
+import { AiFillCloseCircle } from 'react-icons/ai';
+import { instance } from '../api/axios.api';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 type FilmFormProps = {
   film?: IFilm;
   action: string;
-  genres: IGenre[];
-  restrictionAges: IRestrictionAge[]; 
+  allGenres: IGenre[];
+  restrictionAges: IRestrictionAge[];
   isCreate: boolean;
 }
 
 export const FilmForm = (props: FilmFormProps) => {
-  const { film, action, genres, isCreate, restrictionAges } = props;
+  const { film, action, allGenres, isCreate, restrictionAges } = props;
+  const [filmGenres, setFilmGenres] = useState<IGenre[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await instance.get(`film/films/${film?.id}/genres`);
+
+      setFilmGenres(res.data[0].genres)
+    }
+
+    if (!isCreate) {
+      fetchData()
+    }
+  }, [])
+
+  const addGenresToFilm = async () => {
+    await instance.put(`film/${film?.id}/genres`, filmGenres, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  };
 
   return (
     <div className="m-auto flex max-w-[550px]">
@@ -22,6 +48,12 @@ export const FilmForm = (props: FilmFormProps) => {
           <div className="mb-6">
             <input type="hidden" name="id" defaultValue={film?.id} />
 
+            <input
+              type="hidden"
+              name="genres"
+              value={JSON.stringify(filmGenres)}
+            />
+
             <label className="mb-4 flex flex-col">
               <span className="mb-1 text-lg">Название фильма</span>
               <input
@@ -30,7 +62,6 @@ export const FilmForm = (props: FilmFormProps) => {
                 className="input bg-slate-700 placeholder:text-white/70"
                 name="name"
                 defaultValue={film?.name || ''}
-                readOnly={!isCreate}
               />
             </label>
 
@@ -52,15 +83,40 @@ export const FilmForm = (props: FilmFormProps) => {
                 className="input bg-slate-700 placeholder:text-white/70"
                 name="genre"
                 required
-                defaultValue={film?.genre.id || 1}
+                onChange={(event) => {
+                  const select = event.target;
+                  const option = select[select.selectedIndex];
+
+                  if (!filmGenres.find(genre => genre.id === option.value)) {
+                    setFilmGenres([{ id: option.value, name: option.text }, ...filmGenres])
+                  }
+                }}
               >
-                {genres.map((genre: IGenre, index: number) => (
-                  <option key={index} value={genre.id}>
+                {allGenres.map((genre: IGenre) => (
+                  <option key={genre.id} value={genre.id}>
                     {genre.name}
                   </option>
                 ))}
               </select>
             </label>
+
+            <div className='flex flex-wrap items-center gap-2'>
+              {filmGenres.map((genre: IGenre) => (
+                <div key={genre.id} className='group relative flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2'>
+                  {genre.name}
+
+                  <div className='group-hover:flex absolute bottom-0 left-0 right-0 top-0 hidden items-center justify-end rounded-lg bg-black/60 px-3'>
+                    <button onClick={(event) => {
+                      event.preventDefault();
+
+                      setFilmGenres(filmGenres.filter((addedGenre) => addedGenre.id !== genre.id));
+                      // removeGenreFromFilm(genre.id)
+                    }}>
+                      <AiFillCloseCircle />
+                    </button>
+                  </div>
+                </div>
+              ))}</div>
 
             <label className="mb-4 flex flex-col">
               <span className="mb-1 text-lg">Ограничение по возрасту</span>
